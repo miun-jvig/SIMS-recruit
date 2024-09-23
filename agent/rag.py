@@ -5,6 +5,12 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 # NOTE: you must use langchain-core >= 0.3 with Pydantic v2
 from pydantic import BaseModel, Field
+from config.config_loader import model_cfg
+
+
+# data
+model_name = model_cfg['model_name']
+developer_prompt = model_cfg['developer_prompt']
 
 
 class AgentState(TypedDict):
@@ -32,17 +38,14 @@ def grade_cv(state) -> dict:
         reasoning: str = Field(description="Reasoning behind the score")
 
     # LLM setup
-    model = ChatOpenAI(temperature=0, model="gpt-3.5-turbo", streaming=True)
+    model = ChatOpenAI(temperature=0, model=model_name, streaming=True)
 
     # LLM with tool and validation
     llm = model.with_structured_output(GradeWithReasoning)
 
     # Prompt with reasoning
     prompt = PromptTemplate(
-        template="""You are grading how well a CV fits a requirement profile for a job. \n Here is the CV: \n\n {cv} 
-        \n Here is the requirement profile: \n\n {context} \n Based on how well the candidate fits the requirement 
-        profile, grade the CV on a scale from 1 to 5, where 1 fits the least and 5 fits the most. Also, explain your 
-        reasoning for the score.""",
+        template=developer_prompt,
         input_variables=["cv", "context"],
     )
 
@@ -81,7 +84,7 @@ def agent(state):
         """
     print("---CALL AGENT---")
     messages = state["messages"]
-    model = ChatOpenAI(temperature=0, streaming=True, model="gpt-3.5-turbo")
+    model = ChatOpenAI(temperature=0, streaming=True, model=model_name)
     # model = model.bind_tools(tools) <- potential to bind tools here, but not sure if it's even needed
     response = model.invoke(messages)
     # We return a list, because this will get added to the existing list
