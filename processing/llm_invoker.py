@@ -33,4 +33,4 @@ def invoke_llm(prompt, cv, req_profile):
     llm = model.with_structured_output(GradeWithReasoning)
     chain = prompt | llm
 
-    return chain.invoke({"cv": cv, "req_profile": req_profile})
+    return chain.invoke({"cv": cv, "context": req_profile})

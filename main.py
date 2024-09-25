@@ -12,7 +12,7 @@ def main():
         ]
     }
 
-    result = process_graph(state) # Dict with numerical score + reasoning, for API
+    result = process_graph(state)  # Dict with numerical score + reasoning, for API
     print(f"---DECISION: CV GRADED WITH SCORE {result['numerical_score']}/5---")
     print(f"---REASONING: {result['reasoning']}---")
 

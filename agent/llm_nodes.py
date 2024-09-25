@@ -24,7 +24,7 @@ def grade_cv(state) -> dict:
 
     prompt = PromptTemplate(
         template=developer_prompt,
-        input_variables=["cv", "req_profile"],
+        input_variables=["cv", "context"],
     )
     scored_result = invoke_llm(prompt, cv, req_profile)
 
