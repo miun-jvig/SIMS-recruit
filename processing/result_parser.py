@@ -8,10 +8,24 @@ def parse_results(output) -> dict:
     Returns:
         dict: A dictionary containing the numerical score and reasoning
     """
-    # Access the messages inside 'grade_cv'
-    messages = output["grade_cv"]["messages"]
 
-    # Extract the numerical score and reasoning from the messages
+    # Directly return the score and reasoning if the output is already in final form
+    if 'numerical_score' in output and 'reasoning' in output:
+        return {
+            "numerical_score": output['numerical_score'],
+            "reasoning": output['reasoning']
+        }
+
+    # Safely access the 'grade_cv' and 'messages' keys
+    messages = output.get("grade_cv", {}).get("messages", [])
+
+    if not messages:
+        print("No messages found in the output!")
+        return {
+            "numerical_score": "N/A",
+            "reasoning": "No reasoning provided."
+        }
+
     numerical_score = None
     reasoning = None
 
@@ -21,7 +35,6 @@ def parse_results(output) -> dict:
         elif "Reasoning" in message["content"]:
             reasoning = message["content"].split(": ", 1)[1]  # Get the reasoning part
 
-    # Return both score and reasoning
     return {
         "numerical_score": numerical_score,
         "reasoning": reasoning
