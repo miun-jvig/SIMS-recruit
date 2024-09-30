@@ -1,9 +1,4 @@
-from processing.llm_invoker import invoke_llm
-from config.config_loader import model_cfg
-from langchain_core.prompts import PromptTemplate
-
-# data
-developer_prompt = model_cfg['developer_prompt']
+from model.models import invoke_ollama
 
 
 def grade_cv(state) -> dict:
@@ -22,11 +17,7 @@ def grade_cv(state) -> dict:
     cv = messages[0]
     req_profile = messages[-1]
 
-    prompt = PromptTemplate(
-        template=developer_prompt,
-        input_variables=["cv", "context"],
-    )
-    scored_result = invoke_llm(prompt, cv, req_profile)
+    scored_result = invoke_ollama(cv, req_profile)
 
     return {"messages": [{"role": "system", "content": f"Numerical score: {scored_result.numerical_score}"},
                          {"role": "system", "content": f"Reasoning: {scored_result.reasoning}"}]}

@@ -1,9 +1,8 @@
-from agent.llm_nodes import grade_cv
+from graphs.nodes import grade_cv
 from langgraph.graph import StateGraph, START, END
 from typing import Annotated, Sequence, TypedDict
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
-from processing.result_parser import parse_results
 
 
 class AgentState(TypedDict):
@@ -13,6 +12,12 @@ class AgentState(TypedDict):
 
 
 def create_workflow():
+    """
+    Creates a workflow graph according to LangGraph. Currently only has one node.
+
+    Returns:
+        The compiled graph.
+    """
     workflow = StateGraph(AgentState)
     workflow.add_node("grade_cv", grade_cv)
     workflow.add_edge(START, "grade_cv")
@@ -37,6 +42,4 @@ def process_graph(state):
     for output in graph.stream(state):
         print(output)
 
-    final_result = parse_results(output)
-
-    return final_result
+    return output
