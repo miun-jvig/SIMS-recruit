@@ -62,9 +62,7 @@ async def analyze_files(cv: UploadFile = File(...), profile: UploadFile = File(.
         "messages": [
             ("user", cv_content.decode("utf-8")),
             ("user", profile_content.decode("utf-8"))
-
         ]
-
     }
 
     # Call the LLMs "microservice" function to process the CV and job req.

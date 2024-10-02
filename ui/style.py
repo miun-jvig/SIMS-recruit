@@ -1,6 +1,29 @@
 # style.py
 
-def load_styles():
+def css_upload():
+    return """
+            <div style="margin-top: 20px;">
+                <button style="padding: 10px 90px; background-color: #6C4FA1; color: white; border: none; border-radius: 5px;">Use Requirement Profile</button>
+                <button style="padding: 10px 90px; background-color: #6C4FA1; color: white; border: none; border-radius: 5px; margin-left: 10px;">Upload New Profile</button>
+            </div>
+        """
+
+
+def css_main_menu():
+    return """
+    <div class="top-menu">
+        <a href="#">Recruitment</a>
+        <a href="#">Applicants</a>
+        <span class="profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="profile pic">
+            <img src="https://cdn-icons-png.flaticon.com/512/725/725643.png" alt="mail icon" class="icon">
+           Alaa Ourabi
+        </span>
+    </div>
+    """
+
+
+def css_gui():
     return """
     <style>
     /* Ändra bakgrundsfärgen på hela sidan */
