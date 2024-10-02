@@ -6,7 +6,7 @@ import base64
 def show_pdf(file_path):
     with open(file_path, "rb") as f:
         base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-        pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
+        pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="700px" type="application/pdf"></iframe>'
         st.markdown(pdf_display, unsafe_allow_html=True)
 
 
@@ -49,7 +49,8 @@ def layout_recruitment():
         # Upload Template and Use Template buttons (styled via external CSS)
         st.markdown("""
             <div class="upload-buttons">
-                <button>Use Requirement Profile</button>
-                <button>Upload New Profile</button>
+            <div style="margin-top: 20px; text-align: center;">
+                <button style="padding: 10px 105px; background-color: #6C4FA1; color: white; border: none; border-radius: 5px; margin-right: 10px;">Use Requirement Profile</button>
+            <button style="padding: 10px 105px; background-color:  #00BFFF; color: white; border: none; border-radius: 5px;">Upload New Profile</button>
             </div>
         """, unsafe_allow_html=True)

@@ -5,25 +5,37 @@ html, body, [data-testid="stAppViewContainer"] {
 
 /* Top menu styling */
 .top-menu {
-    background-color: #333;
+    background-color: #4a3f3f;
     color: white;
     padding: 10px;
     font-size: 18px;
     text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
 }
 
 .top-menu a {
-    color: white;
-    text-decoration: none;
-    margin-right: 20px;
-    padding: 10px;
-}
+        background-color: #6C4FA1; /* Lila bakgrundsfärg */
+        color: white; /* Vit text */
+        padding: 10px 20px; /* Extra padding för att göra knappen tydligare */
+        text-decoration: none; /* Ta bort understrykning */
+        border-radius: 5px; /* Rundade hörn */
+        font-size: 18px; /* Justera storlek på texten */
+        margin-right: 10px; /* Marginal mellan knapparna */
+        width: 150px; /* Sätter en fast bredd på alla knappar */
+        text-align: center; /* Centrera texten i knapparna */
+    }
 
-.top-menu a:hover {
-    background-color: #575757;
-    border-radius: 5px;
-}
+    .top-menu a:hover {
+        background-color: #5a3f85; /* Lite mörkare lila färg när du hovrar över knappen */
+    }
 
+    /* Avstånd mellan "RecruitIT"-loggan och knapparna */
+    .top-menu span {
+        margin-right: 30px; /* Större avstånd mellan loggan och knapparna */
+    }
 /* Profile section in the top menu */
 .profile {
     float: right;
@@ -63,7 +75,7 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 
 .side-menu h2 {
-    color: black !important;
+    color: #020101 !important;
     text-align: center;
     font-size: 24px !important;
     background-color: transparent !important;
@@ -74,7 +86,7 @@ html, body, [data-testid="stAppViewContainer"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 3px;
-    background-color: #333;
+    background-color: #6C4FA1;
     border: none;
     border-radius: 10px;
     color: white;
@@ -83,13 +95,13 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 
 .stButton > button:hover {
-    background-color: #45a049;
+    background-color: #3fcc49;
 }
 
 /* Content box styling */
 .content {
     padding: 20px;
-    background-color: white;
+    background-color: #e8dada;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
