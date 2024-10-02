@@ -1,9 +1,8 @@
-from style import css_upload
 import streamlit as st
 import base64
 
 
-# Funktion för att läsa och visa en PDF-fil i en iframe
+# Function to display a PDF file inside an iframe
 def show_pdf(file_path):
     with open(file_path, "rb") as f:
         base64_pdf = base64.b64encode(f.read()).decode('utf-8')
@@ -11,13 +10,14 @@ def show_pdf(file_path):
         st.markdown(pdf_display, unsafe_allow_html=True)
 
 
-# Layout med två kolumner
+# Recruitment page layout with two columns
 def layout_recruitment():
     col1, col2 = st.columns([1, 3])
-    # Sidomeny som drop-down meny i vänstra kolumnen
+
+    # Side menu as a drop-down in the left column
     with col1:
         with st.expander("Choose Profile"):
-            # Knappar som öppnar specifika PDF-filer
+            # Buttons that open specific PDF files
             if st.button("System Developer"):
                 st.session_state.selected_pdf = "C:/Users/AlaaO/Downloads/Advertisement (14).pdf"
             if st.button("Systems Analyst"):
@@ -35,16 +35,21 @@ def layout_recruitment():
             if st.button("Support Specialist"):
                 st.session_state.selected_pdf = "C:/Users/AlaaO/Downloads/Advertisement (18).pdf"
 
-    # PDF-visning i högra kolumnen (innehållsdelen)
+    # PDF display in the right column (content area)
     with col2:
         st.markdown("""
             <div class="content">
                 <h2>Preview Profile</h2>
         """, unsafe_allow_html=True)
 
-        # Visa vald PDF-fil i den högra kolumnen om en PDF har valts
+        # Display the selected PDF in the right column if one is chosen
         if 'selected_pdf' in st.session_state:
             show_pdf(st.session_state.selected_pdf)
 
-        # Knappar för "Upload Template" och "Use Template"
-        st.markdown(css_upload(), unsafe_allow_html=True)
+        # Upload Template and Use Template buttons (styled via external CSS)
+        st.markdown("""
+            <div class="upload-buttons">
+                <button>Use Requirement Profile</button>
+                <button>Upload New Profile</button>
+            </div>
+        """, unsafe_allow_html=True)

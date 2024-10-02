@@ -1,0 +1,102 @@
+/* Global styling */
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: #f0f2f6 !important; /* Background color for the entire application */
+}
+
+/* Top menu styling */
+.top-menu {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    text-align: left;
+}
+
+.top-menu a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    padding: 10px;
+}
+
+.top-menu a:hover {
+    background-color: #575757;
+    border-radius: 5px;
+}
+
+/* Profile section in the top menu */
+.profile {
+    float: right;
+}
+
+.profile img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+/* Upload buttons container */
+.upload-buttons {
+    margin-top: 20px;
+}
+
+.upload-buttons button {
+    padding: 10px 90px;
+    background-color: #6C4FA1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-buttons button + button {
+    margin-left: 10px;
+}
+
+/* Side menu styling */
+.side-menu {
+    background-color: #6C4FA1;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.side-menu h2 {
+    color: black !important;
+    text-align: center;
+    font-size: 24px !important;
+    background-color: transparent !important;
+}
+
+/* Button styling for Streamlit buttons */
+.stButton > button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 3px;
+    background-color: #333;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.stButton > button:hover {
+    background-color: #45a049;
+}
+
+/* Content box styling */
+.content {
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Icon styling */
+.icon {
+    width: 25px;
+    height: 25px;
+    margin-left: 10px;
+}
