@@ -1,51 +1,6 @@
 /* Global styling */
 html, body, [data-testid="stAppViewContainer"] {
-    background-color: #f0f2f6 !important; /* Background color for the entire application */
-}
-
-/* Top menu styling */
-.top-menu {
-    background-color: #4a3f3f;
-    color: white;
-    padding: 10px;
-    font-size: 18px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-}
-
-.top-menu a {
-        background-color: #6C4FA1; /* Lila bakgrundsfärg */
-        color: white; /* Vit text */
-        padding: 10px 20px; /* Extra padding för att göra knappen tydligare */
-        text-decoration: none; /* Ta bort understrykning */
-        border-radius: 5px; /* Rundade hörn */
-        font-size: 18px; /* Justera storlek på texten */
-        margin-right: 10px; /* Marginal mellan knapparna */
-        width: 150px; /* Sätter en fast bredd på alla knappar */
-        text-align: center; /* Centrera texten i knapparna */
-    }
-
-    .top-menu a:hover {
-        background-color: #5a3f85; /* Lite mörkare lila färg när du hovrar över knappen */
-    }
-
-    /* Avstånd mellan "RecruitIT"-loggan och knapparna */
-    .top-menu span {
-        margin-right: 30px; /* Större avstånd mellan loggan och knapparna */
-    }
-/* Profile section in the top menu */
-.profile {
-    float: right;
-}
-
-.profile img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-left: 10px;
+    background-color: #434345 !important; /* Background color for the entire application */
 }
 
 /* Upload buttons container */
@@ -95,13 +50,22 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 
 .stButton > button:hover {
-    background-color: #3fcc49;
+    background-color: #9270cf;
+    color: white;
+}
+
+.stButton > button:visited {
+    color: white;
+}
+
+.stButton > button:focus {
+    color: white;
 }
 
 /* Content box styling */
 .content {
     padding: 20px;
-    background-color: #e8dada;
+    background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
