@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
 from graphs.graph import process_graph
 from processing.result_parser import parse_results
+import streamlit as st
 import logging
 import requests
 
@@ -23,6 +24,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def send_to_api(files):
+    # Send files to FastAPI (FastAPI = middleman)
+    # Check link: https://www.w3schools.com/python/module_requests.asp
+    try:
+        response = requests.post("http://localhost:8000/analyze/", files=files)
+        # Check if -> Success
+        if response.status_code == 200:
+            result = response.json()
+            return result.get('ai_grade'), result.get('insights')
+        else:
+            st.error("Fel i analysen (på backendsidan)")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Fel vid anslutning till API: {e}")
 
 
 @app.post("/llm_process/")
