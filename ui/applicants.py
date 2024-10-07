@@ -13,6 +13,7 @@ uploaded_profile = st.session_state.requirement_profile
 with upload_column:
     uploaded_cv = st.file_uploader("Upload CV", type=['pdf', 'docx', 'txt'])
     if uploaded_cv is not None and uploaded_profile is not None:
+        # Update the table
         update_row(uploaded_cv.name, uploaded_profile.name, "-", "Pending")
 
 # LEFT COLUMN
@@ -27,12 +28,14 @@ with grade_analyze_column:
                 'cv': (uploaded_cv.name, uploaded_cv, uploaded_cv.type),
                 'profile': (uploaded_profile.name, uploaded_profile, uploaded_profile.type),
             }
-            # Send to API, receive AI grade + reasoning
-            grade, reasoning = send_to_api(files)
-            st.session_state.grade = grade  # Session state for the AI-grade
-            st.session_state.reasoning = reasoning  # Session state for the AI-reasoning
 
-            update_row(uploaded_cv.name, uploaded_profile.name, grade, "Graded")
+            # Send to API, receive AI grade, reasoning, matching and not_matching qualifications
+            result = dict(zip(['grade', 'reasoning', 'matching', 'not_matching'], send_to_api(files)))
+            # Update the session states for grade, reasoning, matching and not_matching
+            st.session_state.update(result)
+
+            # Update the table
+            update_row(uploaded_cv.name, uploaded_profile.name, st.session_state.grade, "Graded")
         else:
             st.error("Please upload a requirement profile and CV.")
 

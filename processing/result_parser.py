@@ -1,41 +1,36 @@
 def parse_results(output) -> dict:
     """
-    Parses the output from the graph to extract numerical score and reasoning.
+    Parses the output from class GradeWithReasoning.to_message_format()
 
     Args:
-        output (dict): The output of the graph stream containing messages
+        output (dict): A dictionary containing a 'grade_cv' key, which holds a list of
+                       message dictionaries with 'role' and 'content' fields.
 
     Returns:
-        dict: A dictionary containing the numerical score and reasoning
+        dict: A dictionary with the following keys:
+            - "numerical_score" (str): The numerical score assigned to the CV.
+            - "reasoning" (str): The reasoning behind the assigned score.
+            - "matching" (str): The qualifications that match the job requirements.
+            - "not_matching" (str): The qualifications that do not match the job requirements.
     """
+    key_map = {
+        "Numerical score:": "numerical_score",
+        "Reasoning:": "reasoning",
+        "Matching qualifications:": "matching",
+        "Not matching qualifications:": "not_matching"
+    }
 
-    # Directly return the score and reasoning if the output is already in final form
-    if 'numerical_score' in output and 'reasoning' in output:
-        return {
-            "numerical_score": output['numerical_score'],
-            "reasoning": output['reasoning']
-        }
-
-    # Safely access the 'grade_cv' and 'messages' keys
+    # Extract the messages from the output
     messages = output.get("grade_cv", {}).get("messages", [])
 
-    if not messages:
-        print("No messages found in the output!")
-        return {
-            "numerical_score": "N/A",
-            "reasoning": "No reasoning provided."
-        }
+    # Initialize the result dictionary with the desired keys
+    result = {v: "" for v in key_map.values()}
 
-    numerical_score = None
-    reasoning = None
-
+    # Loop through the messages and populate the result dictionary
     for message in messages:
-        if "Numerical score" in message["content"]:
-            numerical_score = message["content"].split(": ")[1]  # Get the score part
-        elif "Reasoning" in message["content"]:
-            reasoning = message["content"].split(": ", 1)[1]  # Get the reasoning part
+        content = message.get("content", "")
+        for prefix, key in key_map.items():
+            if content.startswith(prefix):
+                result[key] = content.replace(prefix, "").strip()
 
-    return {
-        "numerical_score": numerical_score,
-        "reasoning": reasoning
-    }
+    return result

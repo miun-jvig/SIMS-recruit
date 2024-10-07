@@ -14,6 +14,19 @@ class GradeWithReasoning(BaseModel):
     """Numerical score and reasoning for relevance check."""
     numerical_score: str = Field(description="Relevance score from 1 to 5")
     reasoning: str = Field(description="Reasoning behind the score")
+    matching: str = Field(description="Matching qualifications")
+    not_matching: str = Field(description="Not matching qualifications")
+
+    def to_message_format(self):
+        container = {
+            "messages": [
+                {"role": "system", "content": f"Numerical score: {self.numerical_score}"},
+                {"role": "system", "content": f"Reasoning: {self.reasoning}"},
+                {"role": "system", "content": f"Matching qualifications: {self.matching}"},
+                {"role": "system", "content": f"Not matching qualifications: {self.not_matching}"}
+            ]
+        }
+        return container
 
 
 def invoke_ollama(cv, req_profile):

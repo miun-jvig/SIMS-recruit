@@ -34,7 +34,7 @@ def send_to_api(files):
         # Check if -> Success
         if response.status_code == 200:
             result = response.json()
-            return result.get('ai_grade'), result.get('insights')
+            return result.get('ai_grade'), result.get('insights'), result.get('matching'), result.get('not_matching')
         else:
             st.error("Fel i analysen (på backendsidan)")
     except requests.exceptions.RequestException as e:
@@ -89,7 +89,9 @@ async def analyze_files(cv: UploadFile = File(...), profile: UploadFile = File(.
         result = response.json()
         return {
             "ai_grade": result["numerical_score"],
-            "insights": result["reasoning"]
+            "insights": result["reasoning"],
+            "matching": result["matching"],
+            "not_matching": result["not_matching"]
         }
     else:
         return {"error": "kan vara måns fel"}

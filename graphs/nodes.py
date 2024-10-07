@@ -17,7 +17,9 @@ def grade_cv(state) -> dict:
     cv = messages[0]
     req_profile = messages[-1]
 
+    # Invoke_ollama returns a GradeWithReasoning class as defined in model/models.py
     scored_result = invoke_ollama(cv, req_profile)
+    # Convert to "messages"/the AgentState created in graphs/graph.py, which the LLM understands
+    llm_message = scored_result.to_message_format()
 
-    return {"messages": [{"role": "system", "content": f"Numerical score: {scored_result.numerical_score}"},
-                         {"role": "system", "content": f"Reasoning: {scored_result.reasoning}"}]}
+    return llm_message
