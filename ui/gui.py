@@ -6,6 +6,7 @@ st.set_page_config(layout="wide")
 
 # Initialization of states that will be sent across pages
 st.session_state.setdefault('requirement_profile', None)
+st.session_state.setdefault('applicant_name', None)
 st.session_state.setdefault('grade', None)
 st.session_state.setdefault('reasoning', None)
 st.session_state.setdefault('matching', None)

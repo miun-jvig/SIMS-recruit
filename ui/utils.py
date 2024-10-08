@@ -3,6 +3,10 @@ import streamlit as st
 import pandas as pd
 
 
+def visualize_grade(grade):
+    return "🟢" * int(grade) + "⚪" * (5 - int(grade)) if grade in ["1", "2", "3", "4", "5"] else None
+
+
 def update_row(name, profile, grade, status):
     # Incoming new data to be updated in the table
     new_data = {'Name': name, 'Date': datetime.now().strftime("%Y-%m-%d %H:%M"),

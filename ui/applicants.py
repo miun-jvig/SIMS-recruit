@@ -13,6 +13,7 @@ uploaded_profile = st.session_state.requirement_profile
 with upload_column:
     uploaded_cv = st.file_uploader("Upload CV", type=['pdf', 'docx', 'txt'])
     if uploaded_cv is not None and uploaded_profile is not None:
+        st.session_state.applicant_name = uploaded_cv.name
         # Update the table
         update_row(uploaded_cv.name, uploaded_profile.name, "-", "Pending")
 

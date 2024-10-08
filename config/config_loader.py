@@ -7,3 +7,4 @@ config_object.read(config_file)
 
 # objects
 model_cfg = config_object['MODEL']
+insights_cfg = config_object['INSIGHTS']
