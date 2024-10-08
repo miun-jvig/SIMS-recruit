@@ -4,7 +4,7 @@ import streamlit as st
 
 # ej implementerad än!
 def update_row_from_db():
-    # Hämta alla poster från API:t som hämtar från databasen
+
     response = requests.get("http://localhost:8000/get_all_entries/")
 
     if response.status_code == 200:

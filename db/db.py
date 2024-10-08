@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Skapa en anslutning till SQLite-databasen
+# Connection db
 SQLALCHEMY_DATABASE_URL = "sqlite:///./recruit.db"
 
 engine = create_engine(
