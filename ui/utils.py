@@ -3,6 +3,11 @@ import streamlit as st
 import pandas as pd
 
 
+def get_feedback(score):
+    feedback = {"1": "Bad!", "2": "Subpar!", "3": "Average!", "4": "Good!", "5": "Excellent!"}
+    return feedback.get(score, "Invalid input")
+
+
 def visualize_grade(grade):
     return "🟢" * int(grade) + "⚪" * (5 - int(grade)) if grade in ["1", "2", "3", "4", "5"] else None
 
