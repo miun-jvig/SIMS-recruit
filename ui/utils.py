@@ -9,7 +9,7 @@ def get_feedback(score):
 
 
 def visualize_grade(grade):
-    return "🟢" * int(grade) + "⚪" * (5 - int(grade)) if grade in ["1", "2", "3", "4", "5"] else None
+    return "🟢" * int(grade) + "⚪" * (5 - int(grade))
 
 
 def update_row(name, profile, grade, status):
