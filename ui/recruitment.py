@@ -1,5 +1,8 @@
 import streamlit as st
 import base64
+import requests
+
+API_URL = "http://localhost:8000"
 
 
 # Function to display a PDF file inside an iframe
@@ -35,11 +38,34 @@ with profile_column:
 
     st.write("")
 
+    # Columns for using a predefined profile or uploading a new one
     use_profile, upload_profile = st.columns(2)
+
+    # Button to switch page to `applicants.py`
     if use_profile.button("Use Requirement Profile"):
         st.switch_page("applicants.py")
 
+    # Upload Profile Column
     with upload_profile:
-        uploaded_profile = st.file_uploader("Upload Profile", type=["pdf", "docx", "txt"])
+        uploaded_profile = st.file_uploader("Upload Requirement Profile", type=["pdf", "docx", "txt"])
         if uploaded_profile is not None:
-            st.session_state.requirement_profile = uploaded_profile
+            # Send the uploaded file to the backend to store it in the database
+            with st.spinner("Uploading profile..."):
+                files = {"profile": (uploaded_profile.name, uploaded_profile, uploaded_profile.type)}
+                response = requests.post(f"{API_URL}/upload/job_profile/", files=files)
+
+            if response.status_code == 200:
+                data = response.json()
+                entry_id = data.get("entry_id")
+                st.toast("Requirement profile uploaded!")
+
+                # Store the entry_id in session_state for use when uploading a CV
+                st.session_state["entry_id"] = entry_id
+                st.session_state["requirement_profile"] = uploaded_profile
+            else:
+                st.error("Something went wrong while uploading the profile.")
+
+# Information to guide the user if they haven't uploaded a requirement profile
+#if "entry_id" not in st.session_state:
+    #st.info(
+        #"You can proceed without uploading a requirement profile, but you will need to upload one before analyzing a CV.")

@@ -1,18 +1,18 @@
 from sqlalchemy import Column, Integer, String, LargeBinary, Text, DateTime
-from db.db import base
 from sqlalchemy.sql import func
+from db.db_base import Base
 
-class CVJobPair(base):
+class CVJobPair(Base):
     __tablename__ = 'cv_job_pair'
 
     id = Column(Integer, primary_key=True, index=True)
     cv_filename = Column(String, index=True)
-    cv_content = Column(LargeBinary)  # Store cv as blob
+    cv_content = Column(LargeBinary)
     job_filename = Column(String, index=True)
-    job_content = Column(LargeBinary)  # Store job as blob
-    grade = Column(Integer)  # Store grade from LLM
-    insights = Column(Text)  # Store reasoning as text
-    status = Column(String, default='uploaded')  # Track status of the pair
-    matching = Column(Text)  # Store matching details as text
-    not_matching = Column(Text)  # Store not matching details as text
+    job_content = Column(LargeBinary)
+    grade = Column(Integer)
+    insights = Column(Text)
+    status = Column(String, default='pending')
+    matching = Column(Text)
+    not_matching = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import streamlit as st
 
-# ej implementerad än!
+# Not implemented yet!!!!!!!!
 def update_row_from_db():
 
     response = requests.get("http://localhost:8000/get_all_entries/")

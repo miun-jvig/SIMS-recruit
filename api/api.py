@@ -1,22 +1,20 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from starlette.middleware.cors import CORSMiddleware
-from graphs.graph import process_graph
-from processing.result_parser import parse_results
-import streamlit as st
+from sqlalchemy.orm import Session
+from db.db import get_db
+from db.repositories import CVJobRepository
 import logging
 import requests
+from graphs.graph import process_graph
+from processing.result_parser import parse_results
 
 app = FastAPI()
 
-# LOG settings (fastapi) -swagger ui
+# LOG settings
 logging.basicConfig(level=logging.INFO)
 
 # Handle CORS
-# https://fastapi.tiangolo.com/tutorial/cors/#origin
-
-# Port 8501 for streamlit, and 8000 for backend(I think)
 origins = ["http://localhost:8501", "http://localhost:8000"]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -25,20 +23,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Repository initialization (using dependency injection)
+# This function injects the repository into API endpoints, handling interactions with the database.
+def get_repository(db: Session = Depends(get_db)):
+    return CVJobRepository(db)
 
-def send_to_api(files):
-    # Send files to FastAPI (FastAPI = middleman)
-    # Check link: https://www.w3schools.com/python/module_requests.asp
-    try:
-        response = requests.post("http://localhost:8000/analyze/", files=files)
-        # Check if -> Success
-        if response.status_code == 200:
-            result = response.json()
-            return result.get('ai_grade'), result.get('insights'), result.get('matching'), result.get('not_matching')
-        else:
-            st.error("Fel i analysen (på backendsidan)")
-    except requests.exceptions.RequestException as e:
-        st.error(f"Fel vid anslutning till API: {e}")
+# Endpoint to upload a job profile
+@app.post("/upload/job_profile/")
+async def upload_job_profile(profile: UploadFile = File(...), repository: CVJobRepository = Depends(get_repository)):
+    # Read the uploaded job profile content
+    profile_content = await profile.read()
+
+    # Save the job profile to the database (no CV yet)
+    db_entry = repository.add_cv_and_job(
+        cv_filename="",
+        cv_content=b"",
+        job_filename=profile.filename,
+        job_content=profile_content
+    )
+    return {"message": f"Job profile '{profile.filename}' uploaded successfully", "entry_id": db_entry.id}
+
+# Endpoint to upload a CV
+@app.post("/upload/cv/")
+async def upload_cv(entry_id: int, cv: UploadFile = File(...), repository: CVJobRepository = Depends(get_repository)):
+    # Read the uploaded CV content
+    cv_content = await cv.read()
+
+    # Retrieve the existing job profile entry
+    db_entry = repository.get_entry_by_id(entry_id)
+    if not db_entry:
+        raise HTTPException(status_code=404, detail="Job profile not found")
+
+    # Update the entry with the uploaded CV data
+    db_entry.cv_filename = cv.filename
+    db_entry.cv_content = cv_content
+    db_entry.status = "uploaded"
+    repository.db.commit()
+    repository.db.refresh(db_entry)
+
+    # Return a success message and the entry ID
+    return {"message": f"CV '{cv.filename}' uploaded successfully", "entry_id": db_entry.id}
 
 
 @app.post("/llm_process/")
@@ -64,34 +88,51 @@ async def process_cv_and_profile(data: dict):
     return parsed_result
 
 
-@app.post("/analyze/")
-async def analyze_files(cv: UploadFile = File(...), profile: UploadFile = File(...)):
-    cv_content = await cv.read()
-    profile_content = await profile.read()
 
-    # LOGGING filename and size so we know -> files handled correctly
-    logging.info(f"CV mottaget: {cv.filename}, storlek: {len(cv_content)} bytes")
-    logging.info(f"Kravprofil mottaget: {profile.filename}, storlek: {len(profile_content)} bytes")
+# Endpoint to analyze the CV and job profile using an external LLM service
+@app.post("/analyze/{entry_id}")
+async def analyze_files(entry_id: int, repository: CVJobRepository = Depends(get_repository)):
+    # Retrieve the CV-job profile pair from the database
+    db_entry = repository.get_entry_by_id(entry_id)
+
+    # If either the CV or job profile content is missing, return an error
+    if not db_entry or not db_entry.cv_content or not db_entry.job_content:
+        raise HTTPException(status_code=404, detail="Job profile or CV not found")
 
     # Create the state (input) for the LLM process
     state = {
         "messages": [
-            ("user", cv_content.decode("utf-8")),
-            ("user", profile_content.decode("utf-8"))
+            ("user", db_entry.cv_content.decode("utf-8")),
+            ("user", db_entry.job_content.decode("utf-8"))
         ]
     }
+    # Log the state being sent to the LLM for easier debugging
+    logging.info(f"Sending data to LLM for entry ID {entry_id}: {state}")
 
-    # Call the LLMs "microservice" function to process the CV and job req.
-    response = requests.post("http://localhost:8001/llm_process/", json=state)
+    # Send the state to the LLM microservice (running on localhost:8001)
+    try:
+        response = requests.post("http://localhost:8001/llm_process/", json=state)
+        response.raise_for_status()  # Raise an error for bad responses (4xx or 5xx)
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error occurred during LLM processing: {e}")
+        raise HTTPException(status_code=500, detail="Unable to connect to LLM service")
 
     # Process the response
     if response.status_code == 200:
         result = response.json()
+        # Update the database with the LLM analysis result (grade, insights, matching details)
+        repository.update_grade_and_insights(entry_id, result.get("numerical_score"), result.get("reasoning"))
+        repository.update_matching_details(entry_id, result.get("matching"), result.get("not_matching"))
+
+        # Return the results back to the client
         return {
-            "ai_grade": result["numerical_score"],
-            "insights": result["reasoning"],
-            "matching": result["matching"],
-            "not_matching": result["not_matching"]
+            "message": "Analysis completed and saved successfully",
+            "ai_grade": result.get("numerical_score"),
+            "insights": result.get("reasoning"),
+            "matching": result.get("matching"),
+            "not_matching": result.get("not_matching")
         }
+    # If LLM response is unsuccessful, raise an error with the response code
     else:
-        return {"error": "kan vara måns fel"}
+        raise HTTPException(status_code=response.status_code, detail="Error occurred during LLM processing")
+
