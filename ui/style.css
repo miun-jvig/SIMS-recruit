@@ -1,8 +1,3 @@
-/* Global styling */
-html, body, [data-testid="stAppViewContainer"] {
-    background-color: #434345 !important; /* Background color for the entire application */
-}
-
 /* Button styling for Streamlit buttons */
 .stButton > button {
     width: 100%;

@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from config.config_loader import model_cfg
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 
 # Data
 developer_prompt = model_cfg['developer_prompt']
@@ -11,7 +12,6 @@ ollama_format = model_cfg['ollama_format']
 
 
 class GradeWithReasoning(BaseModel):
-    """Numerical score and reasoning for relevance check."""
     numerical_score: str = Field(description="Relevance score from 1 to 5")
     reasoning: str = Field(description="Reasoning behind the score, be specific and explain thoroughly")
     matching: str = Field(description="Matching qualifications")
@@ -40,14 +40,17 @@ def invoke_ollama(cv, req_profile):
     Returns:
         The invoked chain for parsing.
     """
-    prompt = PromptTemplate(
-        template=developer_prompt,
-        input_variables=["cv", "context"],
+    grade_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", developer_prompt),
+            ("human", "Retrieved CV: \n\n {cv} \n\n Requirement Profile: \n\n {context}"),
+        ]
     )
 
     # Chain
     llm = ChatOllama(model=model_name, format=ollama_format, temperature=temperature)
+    # llm = ChatOpenAI(temperature=0, streaming=True, model="gpt-4o")
     structured_llm = llm.with_structured_output(GradeWithReasoning)
-    chain = prompt | structured_llm
+    chain = grade_prompt | structured_llm
 
     return chain.invoke({"cv": cv, "context": req_profile})

@@ -74,8 +74,8 @@ async def process_cv_and_profile(data: dict):
     # State for processing
     state = {
         "messages": [
-            ("user", cv_content),
-            ("user", profile_content),
+            {"role": "user", "content": cv_content},
+            {"role": "user", "content": profile_content}
         ]
     }
 
@@ -107,7 +107,7 @@ async def analyze_files(entry_id: int, repository: CVJobRepository = Depends(get
         ]
     }
     # Log the state being sent to the LLM for easier debugging
-    logging.info(f"Sending data to LLM for entry ID {entry_id}: {state}")
+    # logging.info(f"Sending data to LLM for entry ID {entry_id}: {state}")
 
     # Send the state to the LLM microservice (running on localhost:8001)
     try:
@@ -135,4 +135,3 @@ async def analyze_files(entry_id: int, repository: CVJobRepository = Depends(get
     # If LLM response is unsuccessful, raise an error with the response code
     else:
         raise HTTPException(status_code=response.status_code, detail="Error occurred during LLM processing")
-

@@ -13,7 +13,6 @@ st.session_state.setdefault('matching', None)
 st.session_state.setdefault('not_matching', None)
 if 'df' not in st.session_state:
     st.session_state.df = pd.DataFrame(columns=["Name", "Date", "Role", "Grade", "Status", "Select"])
-st.session_state.setdefault('full', None)
 
 
 # Load external CSS file

@@ -65,7 +65,6 @@ AI_grade_column, analyze_column = st.columns([1, 1])
 
 # When pressing "AI-Grade Selected"
 if AI_grade_column.button("AI-Grade Selected"):
-
     # Ensure the CV has been uploaded before proceeding with the AI analysis
     #if "cv_uploaded" in st.session_state and st.session_state["cv_uploaded"]:
     if "entry_id" in st.session_state:
@@ -110,7 +109,7 @@ if not df.empty:
     # A column with selectable checkboxes
     df['Select'] = False
     selected_rows = st.data_editor(df, use_container_width=True,
-                                   disabled=("ID", "Job Profile", "CV", "Grade", "Status"))
+                                   disabled=("ID", "Job Profile", "CV", "Grade", "Status"), hide_index=True)
     # User can only mark one post
     if selected_rows['Select'].sum() > 1:
         st.error("You can only select one row at a time.")
