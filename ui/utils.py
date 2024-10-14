@@ -1,6 +1,13 @@
-from datetime import datetime
-import streamlit as st
 import pandas as pd
+from db.repositories import CVJobRepository
+from db.db import get_db
+from sqlalchemy.orm import Session
+
+# Gets db-session
+db: Session = next(get_db())
+repository = CVJobRepository(db)
+# Initialize API_URL
+API_URL = "http://localhost:8000"
 
 
 def get_feedback(score):
@@ -12,20 +19,17 @@ def visualize_grade(grade):
     return "🟢" * int(grade) + "⚪" * (5 - int(grade))
 
 
-def update_row(name, profile, grade, status):
-    # Incoming new data to be updated in the table
-    new_data = {'Name': name, 'Date': datetime.now().strftime("%Y-%m-%d %H:%M"),
-                'Role': profile, 'Grade': grade, 'Status': status, 'Select': True}
-
-    if 'df' in st.session_state and not st.session_state.df.empty:
-        # Update the row if it exists, else append it
-        if name in st.session_state.df['Name'].values:
-            # Update existing row using loc
-            st.session_state.df.loc[st.session_state.df['Name'] == name, ['Grade', 'Status', 'Date']] = [
-                grade, status, new_data['Date']]
-        else:
-            # Append a new row if not found
-            st.session_state.df = pd.concat([st.session_state.df, pd.DataFrame([new_data])], ignore_index=True)
+def get_table_data():
+    all_entries = repository.get_all_entries()
+    if all_entries:
+        df = pd.DataFrame([{
+            "ID": entry.id,
+            "Job Profile": entry.job_filename,
+            "CV": entry.cv_filename,
+            "Upload Date": entry.created_at,
+            "Grade": entry.grade,
+            "Status": entry.status
+        } for entry in all_entries])
+        return df
     else:
-        # If DataFrame is empty, just add the new row
-        st.session_state.df = pd.DataFrame([new_data])
+        return pd.DataFrame()

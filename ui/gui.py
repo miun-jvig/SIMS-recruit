@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_extras.app_logo import add_logo
 import pandas as pd
 
+
 st.set_page_config(layout="wide")
 
 # Initialization of states that will be sent across pages
@@ -13,7 +14,7 @@ st.session_state.setdefault('matching', None)
 st.session_state.setdefault('not_matching', None)
 if 'df' not in st.session_state:
     st.session_state.df = pd.DataFrame(columns=["Name", "Date", "Role", "Grade", "Status", "Select"])
-API_URL = "http://localhost:8000"
+
 
 # Load external CSS file
 def load_css():
