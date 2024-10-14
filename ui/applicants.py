@@ -4,9 +4,7 @@ import pandas as pd
 from db.db import get_db
 from db.repositories import CVJobRepository
 from sqlalchemy.orm import Session
-
-# API endpoint URL
-API_URL = "http://localhost:8000"
+from ui.gui import API_URL
 
 # Gets db-session
 db: Session = next(get_db())
@@ -29,10 +27,26 @@ def get_table_data():
     else:
         return pd.DataFrame()
 
-#if "df" not in st.session_state:
 st.session_state.df = get_table_data()
 
 # RIGHT COLUMN - For uploading the CV
+uploaded_profile = st.file_uploader("Upload Requirement Profile", type=["pdf", "docx", "txt"])
+if uploaded_profile is not None:
+    # Send the uploaded file to the backend to store it in the database
+    with st.spinner("Uploading profile..."):
+        files = {"profile": (uploaded_profile.name, uploaded_profile, uploaded_profile.type)}
+        response = requests.post(f"{API_URL}/upload/job_profile/", files=files)
+
+    if response.status_code == 200:
+        data = response.json()
+        entry_id = data.get("entry_id")
+        st.toast("Requirement profile uploaded!")
+
+        # Store the entry_id in session_state for use when uploading a CV
+        st.session_state["entry_id"] = entry_id
+        st.session_state["requirement_profile"] = uploaded_profile
+    else:
+        st.error("Something went wrong while uploading the profile.")
 uploaded_cv = st.file_uploader("Upload CV", type=['pdf', 'docx', 'txt'])
 if uploaded_cv is not None:
     # Check if entry_id exist before upload of cv

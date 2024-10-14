@@ -13,7 +13,7 @@ st.session_state.setdefault('matching', None)
 st.session_state.setdefault('not_matching', None)
 if 'df' not in st.session_state:
     st.session_state.df = pd.DataFrame(columns=["Name", "Date", "Role", "Grade", "Status", "Select"])
-
+API_URL = "http://localhost:8000"
 
 # Load external CSS file
 def load_css():
@@ -28,7 +28,7 @@ add_logo("ui/logo.png", height=180)
 load_css()
 
 # Initialize the different pages
-recruitment_page = st.Page("recruitment.py", title="Recruitment", icon=":material/house:")
+recruitment_page = st.Page("dashboard.py", title="Dashboard", icon=":material/house:")
 applicant_page = st.Page("applicants.py", title="Applicants", icon=":material/search:")
 insights_page = st.Page("insights.py", title=" ")  # Hidden page as title is blank
 
