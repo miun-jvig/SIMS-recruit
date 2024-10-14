@@ -7,6 +7,7 @@ st.set_page_config(layout="wide")
 
 # Initialization of states that will be sent across pages
 st.session_state.setdefault('requirement_profile', None)
+st.session_state.setdefault('cv', None)
 st.session_state.setdefault('applicant_name', None)
 st.session_state.setdefault('grade', None)
 st.session_state.setdefault('reasoning', None)
@@ -29,10 +30,10 @@ add_logo("ui/logo.png", height=180)
 load_css()
 
 # Initialize the different pages
-recruitment_page = st.Page("dashboard.py", title="Dashboard", icon=":material/house:")
+dashboard_page = st.Page("dashboard.py", title="Dashboard", icon=":material/house:", default=True)
 applicant_page = st.Page("applicants.py", title="Applicants", icon=":material/search:")
-insights_page = st.Page("insights.py", title=" ")  # Hidden page as title is blank
+insights_page = st.Page("insights.py", title="Insights", icon=":material/bar_chart:")  # Hidden page as title is blank
 
 # Initialize navigation and run the pages
-pages = st.navigation([recruitment_page, applicant_page, insights_page])
+pages = st.navigation([dashboard_page, applicant_page, insights_page])
 pages.run()

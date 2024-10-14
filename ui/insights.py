@@ -12,6 +12,7 @@ repository = CVJobRepository(db)
 
 height_insight = int(insights_cfg['height_insight'])
 
+
 @st.dialog("Manually Grade Candidate")
 def manually_enter_grade():
     st.write(f"Current Grade: {grade} / 5")
@@ -28,6 +29,7 @@ def manually_enter_grade():
             st.switch_page("applicants.py")
         else:
             st.error("Grade must be one of '1', '2', '3', '4', or '5'.")
+
 
 # Fetch the candidate data from the database using the entry ID
 if "entry_id" in st.session_state:
@@ -52,7 +54,7 @@ if "entry_id" in st.session_state:
         st.error(f"An error occurred while fetching candidate data: {e}")
         st.stop()
 else:
-    st.error("No candidate selected.")
+    st.error("Please choose a candidate from 'Applicants'.")
     st.stop()
 
 # Candidate container

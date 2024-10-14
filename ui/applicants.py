@@ -21,7 +21,10 @@ upload_profile_col, upload_cv_col = st.columns([1, 1])
 
 with upload_profile_col:
     uploaded_profile = st.file_uploader("Upload Requirement Profile", type=["txt"])
-    if uploaded_profile is not None:
+
+    if uploaded_profile is not None and (st.session_state["requirement_profile"] is None or
+                                         st.session_state["requirement_profile"] != uploaded_profile):
+        st.session_state["requirement_profile"] = uploaded_profile
         # Send the uploaded file to the backend to store it in the database
         with st.spinner("Uploading profile..."):
             files = {"profile": (uploaded_profile.name, uploaded_profile, uploaded_profile.type)}
@@ -29,19 +32,18 @@ with upload_profile_col:
 
         if response.status_code == 200:
             data = response.json()
-            entry_id = data.get("entry_id")
-
-            # Store the entry_id in session_state for use when uploading a CV
-            st.session_state["entry_id"] = entry_id
-            st.session_state["requirement_profile"] = uploaded_profile
+            st.session_state["entry_id"] = data.get("entry_id")
             # Update dataframe in session_state
             st.session_state.df = get_table_data()
         else:
             st.error("Something went wrong while uploading the profile.")
 
+
 with upload_cv_col:
     uploaded_cv = st.file_uploader("Upload CV", type=['txt'])
-    if uploaded_cv is not None:
+
+    if uploaded_cv is not None and (st.session_state["cv"] is None or st.session_state["cv"] != uploaded_cv):
+        st.session_state["cv"] = uploaded_cv
         # Check if entry_id exist before upload of cv
         if 'entry_id' not in st.session_state:
             st.warning("Please upload a requirement profile before uploading a CV.")
