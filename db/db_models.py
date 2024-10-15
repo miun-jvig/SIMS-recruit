@@ -12,7 +12,7 @@ class CVJobPair(Base):
     job_content = Column(LargeBinary)
     grade = Column(Integer)
     insights = Column(Text)
-    status = Column(String, default='pending')
+    status = Column(String, default='Pending')
     matching = Column(Text)
     not_matching = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

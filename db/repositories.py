@@ -16,7 +16,7 @@ class CVJobRepository:
                 cv_content=cv_content,
                 job_filename=job_filename,
                 job_content=job_content,
-                status='pending'
+                status='Pending'
             )
             self.db.add(db_entry)
             self.db.commit()
@@ -86,6 +86,6 @@ class CVJobRepository:
     # Method to count all entries with the status "pending"
     def get_pending_count(self):
         try:
-            return self.db.query(CVJobPair).filter(CVJobPair.status == 'pending').count()
+            return self.db.query(CVJobPair).filter(CVJobPair.status == 'Pending').count()
         except SQLAlchemyError as e:
             raise e

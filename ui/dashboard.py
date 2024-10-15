@@ -1,10 +1,12 @@
 import streamlit as st
 from sqlalchemy.orm import Session
 
+from config.config_loader import api_cfg
 from db.db import get_db
 from db.repositories import CVJobRepository
 
-API_URL = "http://localhost:8000"
+API_URL = api_cfg['api_url']
+
 
 # Gets db-session
 db: Session = next(get_db())
