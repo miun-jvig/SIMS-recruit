@@ -57,7 +57,7 @@ async def upload_cv(entry_id: int, cv: UploadFile = File(...), repository: CVJob
     # Update the entry with the uploaded CV data
     db_entry.cv_filename = cv.filename
     db_entry.cv_content = cv_content
-    db_entry.status = "uploaded"
+    #db_entry.status = "uploaded"
     repository.db.commit()
     repository.db.refresh(db_entry)
 

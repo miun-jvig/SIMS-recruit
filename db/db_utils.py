@@ -17,7 +17,7 @@ def update_row_from_db():
                 "Date": entry["created_at"],
                 "Role": entry["job_filename"],
                 "Grade": entry['grade'] if entry['grade'] else "-",
-                "Status": "Graded" if entry['grade'] else "Pending",
+                "Status": "Graded" if entry['grade'] else "pending",
                 "Select": False
             }, ignore_index=True)
 

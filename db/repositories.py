@@ -8,7 +8,7 @@ class CVJobRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    # Add a new CV and job profile pair to the database with status "uploaded"
+    # Add a new CV and job profile pair to the database with status "pending"
     def add_cv_and_job(self, cv_filename: str, cv_content: bytes, job_filename: str, job_content: bytes):
         try:
             db_entry = CVJobPair(
@@ -80,5 +80,12 @@ class CVJobRepository:
     def get_all_entries(self):
         try:
             return self.db.query(CVJobPair).all()
+        except SQLAlchemyError as e:
+            raise e
+
+    # Method to count all entries with the status "pending"
+    def get_pending_count(self):
+        try:
+            return self.db.query(CVJobPair).filter(CVJobPair.status == 'pending').count()
         except SQLAlchemyError as e:
             raise e
