@@ -22,10 +22,16 @@ def manually_enter_grade():
 
     if st.button("Set Grade"):
         if new_grade in valid_grades:
-            st.session_state.grade = new_grade
+            #st.session_state.grade = new_grade
             #SKAPA EN NY UPDATE FUNKTION FÖR UPDATE GRADE I REPOS.py
             #repository.update_grade_and_insights(entry_id, int(new_grade), insights="")
-            st.switch_page("applicants.py")
+            try:
+                repository.update_grade(entry_id, new_grade)
+                st.toast("Grade Updated!")
+                st.session_state.grade = new_grade
+                st.switch_page("applicants.py")
+            except Exception as e:
+                st.error(f"An error occured updating grade: {e}")
         else:
             st.error("Grade must be one of '1', '2', '3', '4', or '5'.")
 
@@ -101,7 +107,12 @@ validate_column, manual_column, _ = st.columns([1, 1, 2])
 with validate_column:
     # If user press "Validate Grade", then the st.session_state.grade stays the same
     if st.button("Validate Grade"):
-        st.switch_page("applicants.py")
+        try:
+            repository.validate_grade(entry_id)
+            st.toast("Grade Validated!")
+            st.switch_page("applicants.py")
+        except Exception as e:
+            st.error(f"An error occured validating grade: {e}")
 
 with manual_column:
     # If user press "Manually Grade", then we look to change st.session_state.grade

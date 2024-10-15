@@ -23,11 +23,11 @@ class CVJobRepository:
             self.db.refresh(db_entry)
             return db_entry
         except SQLAlchemyError as e:
-            self.db.rollback()  # Rollback if there is an error
+            self.db.rollback()
             raise e
 
     # Update the grade and insights after AI analysis with status "completed"
-    def update_grade_and_insights(self, entry_id: int, grade: int, insights: str):
+    def update_grade_and_insights(self, entry_id: int, grade: str, insights: str):
         try:
             db_entry = self.get_entry_by_id(entry_id)
             if db_entry:
@@ -37,7 +37,7 @@ class CVJobRepository:
                 self.db.commit()
             return db_entry
         except SQLAlchemyError as e:
-            self.db.rollback()  # Rollback if there is an error
+            self.db.rollback()
             raise e
 
     # Get a specific entry by its ID
@@ -54,7 +54,7 @@ class CVJobRepository:
                 self.db.commit()
             return db_entry
         except SQLAlchemyError as e:
-            self.db.rollback()  # Rollback if there is an error
+            self.db.rollback()
             raise e
 
     # Update the row with new data
@@ -73,7 +73,7 @@ class CVJobRepository:
             else:
                 raise ValueError("Entry not found in the database.")
         except SQLAlchemyError as e:
-            self.db.rollback()  # Rollback if there is an error
+            self.db.rollback()
             raise e
 
     # Retrieve all entries from the database
@@ -87,4 +87,33 @@ class CVJobRepository:
         try:
             return self.db.query(CVJobPair).filter(CVJobPair.status == status).count()
         except SQLAlchemyError as e:
+            raise e
+
+    # Update the grade for a given entry manually
+    def update_grade(self, entry_id: int, new_grade: str):
+        try:
+            db_entry = self.get_entry_by_id(entry_id)
+            if db_entry:
+                db_entry.grade = new_grade
+                db_entry.status = 'Manually Graded'
+                self.db.commit()
+                self.db.refresh(db_entry)
+            else:
+                raise ValueError("Entry not found in the database.")
+        except SQLAlchemyError as e:
+            self.db.rollback()
+            raise e
+
+    # Update the status for a post to "Validated"
+    def validate_grade(self, entry_id: int):
+        try:
+            db_entry = self.get_entry_by_id(entry_id)
+            if db_entry:
+                db_entry.status = "Validated"
+                self.db.commit()
+                self.db.refresh(db_entry)
+            else:
+                raise ValueError("Entry not found in the database.")
+        except SQLAlchemyError as e:
+            self.db.rollback()
             raise e

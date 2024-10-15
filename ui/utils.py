@@ -27,7 +27,7 @@ def set_status_color(status):
     color_map = {
         'Pending': red,
         'AI-Graded': yellow,
-        'Manually Graded': blue,
+        'Manually Graded': green,
         'Validated': green
     }
     return f"color: {color_map.get(str(status), 'white')}"
