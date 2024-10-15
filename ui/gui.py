@@ -32,7 +32,7 @@ load_css()
 # Initialize the different pages
 dashboard_page = st.Page("dashboard.py", title="Dashboard", icon=":material/house:", default=True)
 applicant_page = st.Page("applicants.py", title="Applicants", icon=":material/search:")
-insights_page = st.Page("insights.py", title="Insights", icon=":material/bar_chart:")  # Hidden page as title is blank
+insights_page = st.Page("insights.py", title="Insights", icon=":material/bar_chart:")
 
 # Initialize navigation and run the pages
 pages = st.navigation([dashboard_page, applicant_page, insights_page])

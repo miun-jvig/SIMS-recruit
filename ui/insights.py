@@ -1,6 +1,5 @@
 import streamlit as st
 from requests import Session
-
 from config.config_loader import insights_cfg
 from db.db import get_db
 from db.repositories import CVJobRepository

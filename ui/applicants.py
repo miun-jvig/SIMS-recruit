@@ -1,13 +1,15 @@
+import pandas as pd
 import streamlit as st
 import requests
 from db.repositories import CVJobRepository
 from db.db import get_db
 from sqlalchemy.orm import Session
-from ui.utils import get_table_data
-from config.config_loader import api_cfg
+from ui.utils import get_table_data, set_status_color
+from config.config_loader import api_cfg, applicants_cfg
 
 # Data from config
 API_URL = api_cfg['api_url']
+help_text = applicants_cfg['help_text']
 
 # Gets db-session
 db: Session = next(get_db())
@@ -95,7 +97,6 @@ if AI_grade_column.button("AI-Grade Selected"):
 
             # Update df in session_state
             st.session_state.df = get_table_data()
-            st.toast("AI-grade done!")
         else:
             st.error("Something went wrong with AI-analyze.")
     else:
@@ -111,11 +112,15 @@ if analyze_column.button("Analyze Selected"):
 # Show updated table
 df = st.session_state.df
 
+
 if not df.empty:
     # A column with selectable checkboxes
     df['Select'] = False
-    selected_rows = st.data_editor(df, use_container_width=True,
-                                   disabled=("ID", "Job Profile", "CV", "Grade", "Status"), hide_index=True)
+    # Sets color according to defined colors in utils.py
+    styled_df = df.style.map(set_status_color)
+    selected_rows = st.data_editor(styled_df, use_container_width=True,
+                                   disabled=("ID", "Job Profile", "CV", "Grade", "Status"), hide_index=True,
+                                   column_config={"Status": st.column_config.TextColumn(help=help_text)})
     # User can only mark one post
     if selected_rows['Select'].sum() > 1:
         st.error("You can only select one row at a time.")

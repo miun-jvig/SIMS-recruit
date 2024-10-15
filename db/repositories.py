@@ -33,7 +33,7 @@ class CVJobRepository:
             if db_entry:
                 db_entry.grade = grade
                 db_entry.insights = insights
-                db_entry.status = 'graded'
+                db_entry.status = 'AI-Graded'
                 self.db.commit()
             return db_entry
         except SQLAlchemyError as e:
@@ -83,9 +83,8 @@ class CVJobRepository:
         except SQLAlchemyError as e:
             raise e
 
-    # Method to count all entries with the status "pending"
-    def get_pending_count(self):
+    def get_status_count(self, status):
         try:
-            return self.db.query(CVJobPair).filter(CVJobPair.status == 'Pending').count()
+            return self.db.query(CVJobPair).filter(CVJobPair.status == status).count()
         except SQLAlchemyError as e:
             raise e

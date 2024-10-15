@@ -9,3 +9,5 @@ config_object.read(config_file)
 model_cfg = config_object['MODEL']
 insights_cfg = config_object['INSIGHTS']
 api_cfg = config_object['API']
+applicants_cfg = config_object['APPLICANTS']
+colors_cfg = config_object['COLORS']

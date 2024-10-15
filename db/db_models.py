@@ -10,7 +10,7 @@ class CVJobPair(Base):
     cv_content = Column(LargeBinary)
     job_filename = Column(String, index=True)
     job_content = Column(LargeBinary)
-    grade = Column(Integer)
+    grade = Column(String)
     insights = Column(Text)
     status = Column(String, default='Pending')
     matching = Column(Text)

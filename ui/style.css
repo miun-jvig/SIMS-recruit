@@ -27,19 +27,3 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-
-/* Style for the applicants counter */
-.pending-applicants-container {
-    text-align: left;
-}
-
-.pending-applicants-label {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.pending-applicants-value {
-    font-size: 48px;
-    color: orange;
-    font-weight: bold;
-}

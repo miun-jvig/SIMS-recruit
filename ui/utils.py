@@ -2,12 +2,15 @@ import pandas as pd
 from db.repositories import CVJobRepository
 from db.db import get_db
 from sqlalchemy.orm import Session
+from config.config_loader import api_cfg, colors_cfg
 
 # Gets db-session
 db: Session = next(get_db())
 repository = CVJobRepository(db)
-# Initialize API_URL
-API_URL = "http://localhost:8000"
+
+# Data from config
+API_URL = api_cfg['api_url']
+red, blue, green, yellow = colors_cfg['red'], colors_cfg['blue'], colors_cfg['green'], colors_cfg['yellow']
 
 
 def get_feedback(score):
@@ -17,6 +20,17 @@ def get_feedback(score):
 
 def visualize_grade(grade):
     return "🟢" * int(grade) + "⚪" * (5 - int(grade))
+
+
+def set_status_color(status):
+    # Colors picked from https://davidmathlogic.com/colorblind to ensure accessibility for colorblind
+    color_map = {
+        'Pending': red,
+        'AI-Graded': yellow,
+        'Manually Graded': blue,
+        'Validated': green
+    }
+    return f"color: {color_map.get(str(status), 'white')}"
 
 
 def get_table_data():
