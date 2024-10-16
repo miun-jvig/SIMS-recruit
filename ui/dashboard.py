@@ -39,20 +39,21 @@ with applicants_header_column:
 with status_header_column:
     st.header("Status")
 
-with st.container(border=True, height=300):
+with st.container(border=True, height=350):
     for entry in db_entries:
         # Create two columns for each entry: one for the applicant and one for the status
         cols = st.columns([1, 1, 2])
 
         # Display applicant info in the first column
-        with cols[0]:
-            left_column = st.columns([0.2, 0.8])
-            left_column[0].image(profile_icon, width=60)
-            left_column[1].text("")
-            left_column[1].text(entry.cv_filename)
+        if entry.cv_filename:
+            with cols[0]:
+                left_column = st.columns([0.2, 0.8])
+                left_column[0].image(profile_icon, width=60)
+                left_column[1].text("")
+                left_column[1].text(entry.cv_filename)
 
-        # Display status in the second column
-        with cols[1]:
-            status_color = set_status_color(entry.status)
-            st.text("")
-            st.markdown(f"<span style='{status_color}'>{entry.status}</span>", unsafe_allow_html=True)
+            # Display status in the second column
+            with cols[1]:
+                status_color = set_status_color(entry.status)
+                st.text("")
+                st.markdown(f"<span style='{status_color}'>{entry.status}</span>", unsafe_allow_html=True)

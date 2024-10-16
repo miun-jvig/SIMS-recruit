@@ -112,7 +112,6 @@ if analyze_column.button("Analyze Selected"):
 # Show updated table
 df = st.session_state.df
 
-
 if not df.empty:
     # A column with selectable checkboxes
     df['Select'] = False
@@ -130,3 +129,17 @@ if not df.empty:
         st.session_state["entry_id"] = selected_entry_id
 else:
     st.info("No data available yet. Please upload a requirement profile or a CV.")
+
+# Delete button
+_, delete_column = st.columns([6, 1])
+with delete_column:
+    if st.button("Delete Selected"):
+        # Only check for entry_id if the button is pressed
+        if st.session_state.get("entry_id") is not None:
+            repository.delete_entry_by_id(int(st.session_state["entry_id"]))
+            # Reset back to None, otherwise the session state is the deleted entry
+            st.session_state["entry_id"] = None
+            # The rerun is needed, otherwise you need to press the delete button twice
+            st.rerun()
+        else:
+            st.error("Please select a row from the table to delete.")

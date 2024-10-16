@@ -85,7 +85,10 @@ class CVJobRepository:
 
     def get_status_count(self, status):
         try:
-            return self.db.query(CVJobPair).filter(CVJobPair.status == status).count()
+            return self.db.query(CVJobPair).filter(
+                CVJobPair.status == status,
+                CVJobPair.cv_filename != ""
+            ).count()
         except SQLAlchemyError as e:
             raise e
 
@@ -112,6 +115,18 @@ class CVJobRepository:
                 db_entry.status = "Validated"
                 self.db.commit()
                 self.db.refresh(db_entry)
+            else:
+                raise ValueError("Entry not found in the database.")
+        except SQLAlchemyError as e:
+            self.db.rollback()
+            raise e
+
+    def delete_entry_by_id(self, entry_id: int):
+        try:
+            db_entry = self.get_entry_by_id(entry_id)
+            if db_entry:
+                self.db.delete(db_entry)
+                self.db.commit()
             else:
                 raise ValueError("Entry not found in the database.")
         except SQLAlchemyError as e:
