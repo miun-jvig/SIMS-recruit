@@ -72,7 +72,17 @@ with st.container():
     with title_column:
         st.title(f"Candidate: :blue[{cv_filename}]")
     with download_column:
-        st.download_button(label="Download CV", data="temp")
+        # Use the actual CV content from the database for download
+        if candidate_entry.cv_content:
+            st.download_button(
+                label="Download CV",
+                data=candidate_entry.cv_content,
+                file_name=cv_filename,
+                mime="application/octet-stream"
+            )
+        else:
+            st.error("No CV available for download.")
+
 
 # Container for the grades
 with st.container(border=True):

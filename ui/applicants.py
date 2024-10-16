@@ -104,10 +104,18 @@ if AI_grade_column.button("AI-Grade Selected"):
 
 # When pressing "Analyze Selected"
 if analyze_column.button("Analyze Selected"):
-    if "grade" in st.session_state:
-        st.switch_page("insights.py")
+    if "entry_id" in st.session_state:
+        # Corrects the ID to int for Python
+        selected_entry_id = int(st.session_state["entry_id"])
+
+        selected_entry = repository.get_entry_by_id(selected_entry_id)
+
+        if selected_entry and selected_entry.status in ["AI-Graded", "Manually Graded"]:
+            st.switch_page("insights.py")
+        else:
+            st.error("Post need to be graded before analyzing.")
     else:
-        st.error("The post must be AI graded before manually analyzing.")
+        st.error("Please select a row from the table to analyze.")
 
 # Show updated table
 df = st.session_state.df
