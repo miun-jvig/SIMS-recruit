@@ -100,17 +100,16 @@ async def analyze_files(entry_id: int, repository: CVJobRepository = Depends(get
     if not db_entry or not db_entry.cv_content or not db_entry.job_content:
         raise HTTPException(status_code=404, detail="Job profile or CV not found")
 
-    job_text_content = "";
-
+    job_text_content = ""
     if db_entry.job_filename.endswith(".pdf"):
         job_text_content = extract_text_from_pdf(db_entry.job_content)
-    else:
+    elif db_entry.job_filename.endswith(".txt"):
         job_text_content = db_entry.job_content.decode("utf-8")
 
     cv_text_content = ""
     if db_entry.cv_filename.endswith(".pdf"):
         cv_text_content = extract_text_from_pdf(db_entry.cv_content)
-    else:
+    elif db_entry.cv_filename.endswith(".txt"):
         cv_text_content = db_entry.cv_content.decode("utf-8")
 
 
