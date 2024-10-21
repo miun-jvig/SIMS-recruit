@@ -6,6 +6,7 @@ from db.repositories import CVJobRepository
 import logging
 import requests
 from graphs.graph import process_graph
+from processing.extract_from_pdf import extract_text_from_pdf
 from processing.result_parser import parse_results
 
 app = FastAPI()
@@ -99,11 +100,29 @@ async def analyze_files(entry_id: int, repository: CVJobRepository = Depends(get
     if not db_entry or not db_entry.cv_content or not db_entry.job_content:
         raise HTTPException(status_code=404, detail="Job profile or CV not found")
 
+    job_text_content = "";
+
+    if db_entry.job_filename.endswith(".pdf"):
+        job_text_content = extract_text_from_pdf(db_entry.job_content)
+    else:
+        job_text_content = db_entry.job_content.decode("utf-8")
+
+    cv_text_content = ""
+    if db_entry.cv_filename.endswith(".pdf"):
+        cv_text_content = extract_text_from_pdf(db_entry.cv_content)
+    else:
+        cv_text_content = db_entry.cv_content.decode("utf-8")
+
+
+    #test
+    logging.info(f"Extracted job profile: {job_text_content}")
+    logging.info(f"Extracted CV profile: {cv_text_content}")
+
     # Create the state (input) for the LLM process
     state = {
         "messages": [
-            ("user", db_entry.cv_content.decode("utf-8")),
-            ("user", db_entry.job_content.decode("utf-8"))
+            ("user", cv_text_content),
+            ("user", job_text_content)
         ]
     }
     # Log the state being sent to the LLM for easier debugging

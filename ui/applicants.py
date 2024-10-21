@@ -22,7 +22,7 @@ st.session_state.df = get_table_data()
 upload_profile_col, upload_cv_col = st.columns([1, 1])
 
 with upload_profile_col:
-    uploaded_profile = st.file_uploader("Upload Requirement Profile", type=["txt"])
+    uploaded_profile = st.file_uploader("Upload Requirement Profile", type=['txt','pdf'])
 
     if uploaded_profile is not None and st.session_state["requirement_profile"] != uploaded_profile:
         st.session_state["requirement_profile"] = uploaded_profile
@@ -41,7 +41,7 @@ with upload_profile_col:
 
 
 with upload_cv_col:
-    uploaded_cv = st.file_uploader("Upload CV", type=['txt'])
+    uploaded_cv = st.file_uploader("Upload CV", type=['txt', 'pdf'])
 
     if uploaded_cv is not None and st.session_state["cv"] != uploaded_cv:
         st.session_state["cv"] = uploaded_cv
