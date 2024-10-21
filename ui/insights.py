@@ -37,7 +37,7 @@ def manually_enter_grade():
 
 
 # Fetch the candidate data from the database using the entry ID
-if "entry_id" in st.session_state:
+if "entry_id" in st.session_state and st.session_state["entry_id"] is not None:
     try:
         # Ensure entry_id is an integer
         entry_id = int(st.session_state["entry_id"])

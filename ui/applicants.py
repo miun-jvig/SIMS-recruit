@@ -110,7 +110,7 @@ if analyze_column.button("Analyze Selected"):
 
         selected_entry = repository.get_entry_by_id(selected_entry_id)
 
-        if selected_entry and selected_entry.status in ["AI-Graded", "Manually Graded"]:
+        if selected_entry and selected_entry.status in ["AI-Graded", "Manually Graded", "Validated"]:
             st.switch_page("insights.py")
         else:
             st.error("Post need to be graded before analyzing.")
