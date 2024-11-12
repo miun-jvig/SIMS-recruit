@@ -1,5 +1,7 @@
 # SIMS-recruit
 
+![system_architecture](https://github.com/user-attachments/assets/0a1a2af0-a1dc-459e-b149-f3ee513fdae9)
+
 ## System Requirements
 To run this project, you need the following software and tools installed:
 
