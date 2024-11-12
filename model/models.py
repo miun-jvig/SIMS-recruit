@@ -48,8 +48,8 @@ def invoke_ollama(cv, req_profile):
     )
 
     # Chain
-    # llm = ChatOllama(model=model_name, format=ollama_format, temperature=temperature)
-    llm = ChatOpenAI(temperature=0, streaming=True, model="gpt-4o")
+    llm = ChatOllama(model=model_name, format=ollama_format, temperature=temperature)
+
     structured_llm = llm.with_structured_output(GradeWithReasoning)
     chain = grade_prompt | structured_llm
 
